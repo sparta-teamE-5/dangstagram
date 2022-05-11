@@ -5,12 +5,13 @@ body, html {
 }
 
 .addboard-wrapper {
-    background: #FFFBF0;
     height: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    background-repeat: no-repeat;
+
 }
 
 .addboard-content {
