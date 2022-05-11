@@ -4,6 +4,9 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
     <title>Title</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
@@ -89,33 +92,23 @@
     }
 
     </style>
-    <script>
-        function get_content(post_give){
-                  $.ajax({
-                      type: "GET",
-                      url: "/get_content?post_give=post_give",
-                      data: {
-                      },
-                      success: function (response) {
-                      }
-                  });
-                 }
-             function get_contents(){
+<script>
+    function get_content_one(content_id){
+              let contentid =content_id;
               $.ajax({
-                  type: "GET",
-                  url: "/get_contents",
-                  data: {
-                  },
-                  success: function (response) {
-                  console.log("성공")
-                  }
-              });
-          }
-    </script>
+                            type: "GET",
+                            url: "/get_content_one",
+                            data: {
+                             contentid: contentid,
+                            },
+                            success: function (response) {
+
+                            }
+                        });
+      }
+</script>
 </head>
-
 <body>
-
 <div class="home-wrapper">
     <div class="home-main">
         <div class="home-main-header">
@@ -137,12 +130,11 @@
          {% for post in posts %}
         <div class="card">
             <div class="card-contents">
-
                 <div class="card-image">
                     <img src="../static/{{post.image}}">
                 </div>
                 <header class="card-header">
-                    <a class="card-header-title" onclick="get_post({{post._id}})">{{post.title}}</a>
+                    <a class="card-header-title" onclick="get_content_one('{{post._id}}')">{{post.title}}</a>
                 </header>
                 <div class="card-data">
                     <div class="content">
@@ -152,6 +144,9 @@
             </div>
         </div>
         {% endfor %}
+
+
+
     </div>
 </div>
 

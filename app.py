@@ -153,22 +153,46 @@ def api_valid():
 
 
 
-#목록 가져오기
+#게시글 목록 가져오기
 @app.route("/get_contents", methods=['GET'])
-def get_post():
+def get_contents():
+    posts = list(db.posts.find().sort("date", -1).limit(20))
+    print(posts)
+    return render_template('content_list.html', posts=posts)
 
-    post_give = request.args.get("post_give")
-    #content 테이블의 _id 값을 받아오는데 실패해서 하드코딩 해놨습니다.
-    post = list(db.content.find(({"_id": '627a7aa5d0ccb09c6db34b5a'})))
-    comment = list(db.comment.find(({"_id":'627a7aa5d0ccb09c6db34b5a'})))
-    return render_template('content.html', post=post, comment=comment)
 
-@app.route("/get_content", methods=['GET'])
-def get_post():
-    post_give = request.args.get("post_give");
-    post = list(db.posts.find(({"_id": '627a7aa5d0ccb09c6db34b5a'})))
-    comment = list(db.comment.find(({"_id":post_give})))
-    return render_template('content.html', post=post, comment=comment)
+#게시글 한건 보기 조회
+@app.route("/get_content_one", methods=['GET'])
+def get_content_one():
+    content_id = request.args.get("contentid")
+
+    post = list(db.posts.find({'_id':ObjectId(content_id)}))
+    comments = list(db.comment.find({'_id':ObjectId(content_id)}))
+    if not comments:
+        print("1")
+        return render_template('content.html', post=post)
+    return render_template('content.html', post=post, comments=comments)
+
+
+
+
+@app.route('/add_comment', methods=['POST'])
+def add_comment():
+    content_id = request.args.get("content_id")
+    username = request.args.get("username")
+    comment = request.args.get("comment")
+
+    doc = {
+        "content_id": content_id,
+        "username": username,
+        "comment": comment,
+    }
+    db.comment.insert_one(doc)
+
+    comment = list(db.comment.find({'_id':ObjectId(content_id)}))
+    print(comment)
+
+    return  render_template('content.html', comment=comment)
 
 
 if __name__ == '__main__':

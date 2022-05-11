@@ -4,9 +4,38 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 
     <title>Title</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <script>
+        function add_comment_click(){
+            let content_id = '627a7aa5d0ccb09c6db34b5a'
+            let username ="이은지"
+            let comment = $("#comment_data").val()
+            if (comment == '') {
+                    alert('내용을 입력하세요.')
+               }else{
+                   $.ajax({
+                            type: "POST",
+                            url: "/add_comment",
+                            data: {
+                             content_id: content_id,
+                             username: username,comment:comment
+                            },
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                alert(response["msg"]);
+
+                            }
+                        });
+                    }
+               }
+    </script>
     <style>
     .home-main {
     background-image: url(../static/background.png);
@@ -38,32 +67,34 @@
         font-size: 19px;
         margin: 0 15px;
     }
-    .content_wrapper{
+   .content_wrapper{
        background: #F1FDFF;
        padding: 100px;
        display: flex;
-       flex-flow: row wrap;
-       justify-content: space-around;
-       flex-grow: 0;
+       flex-flow: row nowrap;
+       justify-content: flex-start
+
+       flex-grow: 1;
 
     }
     .card{
            margin: 10px;
            padding: 10px;
-           flex-basis: 30%;
+           flex-basis: 40%;
            display: flex;
-           justify-content: center;
+           alig-content: flex-start;
            flex-wrap: wrap;
            flex-grow: 1;
            flex-shrink: 1;
-        }
-         .card-contents{
+    }
+    .card-contents{
         display: flex;
         background: #ffffff;
         flex-flow: column nowrap;
         justify-content: center;
         flex-grow: 0;
     }
+
       .media_wrapper{
            margin: 10px;
            padding: 10px;
@@ -75,20 +106,6 @@
            flex-shrink: 1;
     }
     </style>
-    <script>
-<!--    function commnet_delte(){-->
-<!--                  $.ajax({-->
-<!--                      type: "POST",-->
-<!--                      url: "/commnet_delte",-->
-<!--                      data: {-->
-<!--                      },-->
-<!--                      success: function (response) {-->
-<!--                      console.log("성공")-->
-<!--                      }-->
-<!--                  });-->
-<!--                 }-->
-
-    </script>
 </head>
 <body>
 <div class="home-wrapper">
@@ -115,82 +132,87 @@
                     <img src="../static/small.png">
                 </div>
                 <header class="card-header">
-                    <p class="card-header-title">제목</p>
+                    <p class="card-header-title">{{post.title}}</p>
                 </header>
                 <div class="card-data">
                     <div class="content">
                         <p>
-                            <strong>작성자</strong> <small>작성일</small>
+                            <strong>{{post.username}}</strong> <small>{{post.date}}</small>
                             <br>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
+                         {{post.contents}}
                        </p>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="commnet media_wrapper">
-        <article class="media">
-      <figure class="media-left">
-        <p class="image is-64x64">
-          <img src="https://bulma.io/images/placeholders/128x128.png">
-        </p>
-      </figure>
-  <div class="media-content">
-    <div class="field">
-      <p class="control">
-        <textarea class="textarea" placeholder="Add a comment..."></textarea>
-      </p>
-    </div>
-    <nav class="level">
-      <div class="level-left">
-        <div class="level-item">
-          <a class="button is-info">Submit</a>
-        </div>
-      </div>
-      <div class="level-right">
-        <div class="level-item">
-          <label class="checkbox">
-            <input type="checkbox"> Press enter to submit
-          </label>
-        </div>
-      </div>
-    </nav>
-  </div>
-</article>
-          <article class="media">
-              <figure class="media-left">
+
+        <div class="comment-wrap media_wrapper">
+
+            <article class="media add-comment-article">
+                <figure class="media-left">
                 <p class="image is-64x64">
                   <img src="https://bulma.io/images/placeholders/128x128.png">
                 </p>
               </figure>
-              <div class="media-content">
-                <div class="content">
-                  <p>
-                    <strong>John Smith</strong> <small>@johnsmith</small> <small>31m</small>
-                    <br>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
-                  </p>
+                <div class="media-content">
+            <div class="field">
+              <p class="control">
+                <textarea class="textarea" id="comment_data" placeholder="Add a comment..."></textarea>
+              </p>
+            </div>
+            <nav class="level">
+              <div class="level-left">
+                <div class="level-item">
+                  <a onclick="add_comment_click()" class="button is-info">Submit</a>
                 </div>
-                <nav class="level is-mobile">
-                  <div class="level-left">
-                    <a class="level-item">
-                      <span class="icon is-small"><i class="fas fa-reply"></i></span>
-                    </a>
-                    <a class="level-item">
-                      <span class="icon is-small"><i class="fas fa-retweet"></i></span>
-                    </a>
-                    <a class="level-item">
-                      <span class="icon is-small"><i class="fas fa-heart"></i></span>
-                    </a>
+              </div>
+              <div class="level-right">
+                <div class="level-item">
+                  <label class="checkbox">
+                    <input type="checkbox"> Press enter to submit
+                  </label>
+                </div>
+              </div>
+            </nav>
+          </div>
+            </article>
+            {% for comment in comments %}
+            <article class="media comment-list-article">
+                  <figure class="media-left">
+                    <p class="image is-64x64">
+                      <img src="https://bulma.io/images/placeholders/128x128.png">
+                    </p>
+                  </figure>
+                  <div class="media-content">
+                    <div class="content">
+                      <p>
+                        <strong>{{comment.username}}</strong>
+                        <br>
+                        {{comment.comment}}
+                      </p>
+                    </div>
+                    <nav class="level is-mobile">
+                      <div class="level-left">
+                        <a class="level-item">
+                          <span class="icon is-small"><i class="fas fa-reply"></i></span>
+                        </a>
+                        <a class="level-item">
+                          <span class="icon is-small"><i class="fas fa-retweet"></i></span>
+                        </a>
+                        <a class="level-item">
+                          <span class="icon is-small"><i class="fas fa-heart"></i></span>
+                        </a>
+                      </div>
+                    </nav>
                   </div>
-                </nav>
-              </div>
-              <div class="media-right">
-                <button class="delete" onclick="commnet_delte()"></button>
-              </div>
-        </article>
+                  <div class="media-right">
+                    <button class="delete"></button>
+                  </div>
+            </article>
+            {% endfor %}
         </div>
     </div>
 </div>
+
 </body>
 </html>
