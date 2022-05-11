@@ -2,6 +2,7 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
+    background: #fff;
 }
 
 .addboard-wrapper {
@@ -17,7 +18,10 @@ body, html {
 .addboard-content {
     display: flex;
     flex-wrap: wrap;
-    background: #FFFBF0;
+    padding: 60px;
+    border: 2px solid black;
+    border-radius: 40px;
+    background: #fff;
 }
 
 .addboard-content-img {
@@ -25,6 +29,7 @@ body, html {
 }
 
 .addboard-content-img img {
+    border: 3px solid #00d1b2;
     width: 400px;
     height: 450px;
 }
