@@ -107,22 +107,14 @@
     }
     </style>
     <script>
-        unction delete_comment_click(){
-         let boardID = "{{board._id }}"
-        }
-
-        function add_comment_click(){
-            let boardID = "{{board._id}}"
-            let comment = $("#comment_data").val()
-            if (comment == '') {
-                    alert('내용을 입력하세요.')
-               }else{
-                   $.ajax({
+        function delete_comment_click(comment_id){
+         let boardID = "{{board._id }}";
+         let commentID= comment_id;
+          $.ajax({
                             type: "POST",
-                            url: "/add_comment",
+                            url: "/delete_comment",
                             data: {
-                             boardID: boardID,
-                             comment: comment
+                             boardID: boardID,commentID:commentID
                             },
                             cache: false,
                             contentType: false,
@@ -131,8 +123,32 @@
                                 alert(response["msg"]);
                             }
                         });
+        }
+
+        function add_comment_click(){
+            let boardID = "{{board._id}}"
+            let userID  ="{{user}}"
+            let comment = $("#comment_data").val()
+            if (comment == '') {
+                    alert('내용을 입력하세요.')
+               }else{
+                   $.ajax({
+                            type: "POST",
+                            url: "/add_comment",
+                            data: {
+                             content_id: content_id,
+                             username: username,comment:comment
+                            },
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                window.location.reload();
+                            }
+                        });
                     }
                }
+
     </script>
 </head>
 <body>
@@ -234,9 +250,8 @@
                       </div>
                     </nav>
                   </div>
-
                   <div class="media-right">
-                    <button  class="delete"></button>
+                    <button onclick="delete_comment_click(comment._id)" class="delete"></button>
                   </div>
             </article>
             {% endfor %}

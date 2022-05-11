@@ -166,13 +166,20 @@ def get_contents():
 #게시글 한건 보기 조회
 @app.route("/get_content_one", methods=['GET'])
 def get_content_one():
+    token_receive = request.cookies.get('mytoken')
+    # token을 시크릿키로 디코딩합니다.
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    # payload 안에 id가 들어있습니다. 이 id로 유저정보를 찾습니다.
+    user = payload['id']
+    userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
+
     boardID = request.args.get("boardID")
 
     post = list(db.board.find({'_id':ObjectId(boardID)}))
     comments = list(db.comment.find({'_id':ObjectId(boardID)}))
     if len(comments) == 0:
         return render_template('content.html', post=post)
-    return render_template('content.html', post=post, comments=comments)
+    return render_template('content.html', post=post, comments=comments,user=user)
 
 #댓글 추가
 @app.route('/add_comment', methods=['POST'])
@@ -188,8 +195,28 @@ def add_comment():
     db.comment.insert_one(doc)
     comment = list(db.comment.find({'_id':ObjectId(content_id)}))
     print(comment)
-
     return  render_template('content.html', comment=comment)
+
+@app.route('/delete_comment', methods=['GET'])
+def delete_comment():
+     boardID = request.args.get("boardID")
+     commentID = request.args.get("commentID")
+     token_receive = request.cookies.get('mytoken')
+     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+     loginuserID = payload['id']
+     comment =list(db.comment.find({'_id':ObjectId(commentID),'userID': loginuserID}))
+     doc = {
+         "boardID": boardID,
+         "userID ": loginuserID,
+         "_id ": commentID
+     }
+     if comment is not None:
+         db.comment.delete_one(doc)
+         return jsonify({'result': 'success'})
+         ## 찾지 못하면
+     else:
+         return jsonify({'result': 'fail', 'msg': '해당 댓글작성자가 아닙니다.'})
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
