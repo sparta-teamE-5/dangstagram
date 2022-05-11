@@ -47,9 +47,63 @@ def addboard():
 # 로그인
 @app.route('/login')
 def login():
-
     return render_template('login.html')
 
+# 마이페이지
+@app.route('/mypage')
+def myPage():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        # payload 안에 id가 들어있습니다. 이 id로 유저정보를 찾습니다.
+        userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
+        result = {'id': userinfo['id'], 'pw': userinfo['pw'], 'nick': userinfo['nick']}
+        return render_template('mypage.html', result = result)
+    except jwt.ExpiredSignatureError:
+        # 위를 실행했는데 만료시간이 지났으면 에러가 납니다.
+        return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
+    except jwt.exceptions.DecodeError:
+        # 로그인 정보가 없으면 에러가 납니다!
+        return redirect(url_for("/"))
+
+
+# 마이페이지 API
+@app.route('/api/checkpw', methods=['POST'])
+def checkPW():
+    token_receive = request.cookies.get('mytoken')
+    pw_receive = request.form["pw_give"]
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        userinfo = db.user.find_one({'id': payload['id']}, {'_id': 0})
+        pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
+
+        if(pw_hash==userinfo['pw']):
+            return jsonify({'result': 'success'})
+        else:
+            return jsonify({'result': 'fail'})
+    except jwt.ExpiredSignatureError:
+        # 위를 실행했는데 만료시간이 지났으면 에러가 납니다.
+        return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
+    except jwt.exceptions.DecodeError:
+        # 로그인 정보가 없으면 에러가 납니다!
+        return redirect(url_for("login", redirectUrl="mypage"))
+
+
+# 회원정보수정 API
+@app.route('/api/changeinfo', methods=['POST'])
+def changeInfo():
+    id_receive = request.form["id_give"]
+    pw_receive = request.form["pw_give"]
+    pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
+    db.user.update_one({'id': id_receive}, {'$set': {'pw': pw_hash}})
+    return jsonify({'result': 'success'})
+
+# 회원탈퇴 API
+@app.route('/api/signout', methods=['POST'])
+def deleteInfo():
+    id_receive = request.form["id_give"]
+    db.user.delete_one({'id': id_receive})
+    return jsonify({'result': 'success'})
 
 # 게시글 올리기 API
 @app.route('/api/addboard', methods=['POST'])
