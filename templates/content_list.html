@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <style>
+    .home-main {
+    background-image: url(../static/background.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    }
+    .home-main-header {
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    }
+    .home-main-header a {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: bold;
+        color: #FFFFFF;
+    }
+    .home-main-header-title > a {
+    font-size: 40px;
+    }
+    .home-main-header-menu {
+    display: flex;
+    flex-wrap: nowrap;
+    }
+    .home-main-header-menu > a {
+        flex-shrink: 0;
+        font-size: 19px;
+        margin: 0 15px;
+    }
+    .card_wrapper{
+       background: #F1FDFF;
+       padding: 100px;
+       display: flex;
+       flex-flow: row wrap;
+       justify-content: space-around;
+       flex-grow: 0;
+
+    }
+    .card{
+           margin: 10px;
+           padding: 10px;
+           flex-basis: 30%;
+           display: flex;
+           justify-content: center;
+           flex-wrap: wrap;
+           flex-grow: 1;
+           flex-shrink: 1;
+    }
+    .card-contents{
+        display: flex;
+        background: #ffffff;
+        flex-flow: column nowrap;
+        justify-content: center;
+        flex-grow: 0;
+    }
+    .card-image{
+        background: #fbbbff;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        flex-basis: 60%;
+        flex-grow: 0;
+        flex-shrink:1;
+    }
+    .card-image img{
+    }
+     .card-header{
+     background: #ffffff;
+     flex-basis: 20%;
+     flex-grow:0;
+     flex-shrink: 1;
+    }
+    .card-data{
+    background: #F1f221;
+    flex-basis: 10%;
+    flex-grow: 0;
+    flex-shrink: 1;
+    }
+
+    </style>
+<body>
+<script>
+    function get_post(post_give){
+              $.ajax({
+                  type: "GET",
+                  url: "/get_post?post_give=post_give",
+                  data: {
+                  },
+                  success: function (response) {
+                  console.log("성공")
+                  }
+              });
+             }
+         function get_posts(){
+          $.ajax({
+              type: "GET",
+              url: "/get_posts",
+              data: {
+              },
+              success: function (response) {
+              console.log("성공")
+              }
+          });
+      }
+</script>
+<div class="home-wrapper">
+    <div class="home-main">
+        <div class="home-main-header">
+            <div class="home-main-header-title">
+                <a>Dogstagram</a>
+            </div>
+            <div class="home-main-header-menu">
+                <a href="/addboard">자랑하기</a>
+                <a>둘러보기</a>
+                {% if isOn == 'on'%}
+                <a onclick="logout()">로그아웃</a>
+                {% else %}
+                <a href="/login">로그인</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="card_wrapper">
+         {% for post in posts %}
+        <div class="card">
+            <div class="card-contents">
+                <div class="card-image">
+                    <img src="../static/{{post.image}}">
+                </div>
+                <header class="card-header">
+                    <a class="card-header-title" onclick="get_post({{post._id}})">{{post.title}}</a>
+                </header>
+                <div class="card-data">
+                    <div class="content">
+                        {{post.username}}/{{post.date}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+
+
+    </div>
+</div>
+
+</body>
+</html>
