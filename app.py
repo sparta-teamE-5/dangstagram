@@ -152,5 +152,24 @@ def api_valid():
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
 
+
+#목록 가져오기
+@app.route("/get_contents", methods=['GET'])
+def get_post():
+
+    post_give = request.args.get("post_give")
+    #content 테이블의 _id 값을 받아오는데 실패해서 하드코딩 해놨습니다.
+    post = list(db.content.find(({"_id": '627a7aa5d0ccb09c6db34b5a'})))
+    comment = list(db.comment.find(({"_id":'627a7aa5d0ccb09c6db34b5a'})))
+    return render_template('content.html', post=post, comment=comment)
+
+@app.route("/get_content", methods=['GET'])
+def get_post():
+    post_give = request.args.get("post_give");
+    post = list(db.posts.find(({"_id": '627a7aa5d0ccb09c6db34b5a'})))
+    comment = list(db.comment.find(({"_id":post_give})))
+    return render_template('content.html', post=post, comment=comment)
+
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
