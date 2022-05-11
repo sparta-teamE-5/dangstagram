@@ -1,46 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!--Custom CSS-->
+    <link rel="stylesheet" href="../static/style/home.css">
+    <!--JQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--Bulma-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!--Cookie-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
     <title>Title</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
     <style>
-    .home-main {
-    background-image: url(../static/background.png);
-    background-repeat: no-repeat;
-    background-size: cover;
-    }
-    .home-main-header {
-    padding: 20px 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    }
-    .home-main-header a {
-        font-family: 'Roboto';
-        font-style: normal;
-        font-weight: bold;
-        color: #FFFFFF;
-    }
-    .home-main-header-title > a {
-    font-size: 40px;
-    }
-    .home-main-header-menu {
-    display: flex;
-    flex-wrap: nowrap;
-    }
-    .home-main-header-menu > a {
-        flex-shrink: 0;
-        font-size: 19px;
-        margin: 0 15px;
-    }
     .card_wrapper{
        background: #F1FDFF;
        padding: 100px;
@@ -48,7 +19,6 @@
        flex-flow: row wrap;
        justify-content: space-around;
        flex-grow: 0;
-
     }
     .card{
            margin: 10px;
@@ -90,7 +60,6 @@
     flex-grow: 0;
     flex-shrink: 1;
     }
-
     </style>
 <script>
     function get_content_one(content_id){
@@ -102,7 +71,6 @@
                              contentid: contentid,
                             },
                             success: function (response) {
-
                             }
                         });
       }
@@ -117,7 +85,7 @@
             </div>
             <div class="home-main-header-menu">
                 <a href="/addboard">자랑하기</a>
-                <a>둘러보기</a>
+                <a href="/get_contents">둘러보기</a>
                 {% if isOn == 'on'%}
                 <a onclick="logout()">로그아웃</a>
                 {% else %}
@@ -127,28 +95,28 @@
         </div>
     </div>
     <div class="card_wrapper">
-         {% for post in posts %}
+         {% for board in boards %}
         <div class="card">
             <div class="card-contents">
                 <div class="card-image">
-                    <img src="../static/{{post.image}}">
+                    {% if board.file %}
+                    <img src="../static/boardImage/{{board.file}}">
+                    {% else %}
+                    <img src="../static/boardImage/basic_picture.png">
+                    {% endif %}
                 </div>
                 <header class="card-header">
-                    <a class="card-header-title" onclick="get_content_one('{{post._id}}')">{{post.title}}</a>
+                    <a class="card-header-title" onclick="get_content_one('{{board._id}}')">{{board.title}}</a>
                 </header>
                 <div class="card-data">
                     <div class="content">
-                        {{post.username}}/{{post.date}}
+                        {{board.userID}}
                     </div>
                 </div>
             </div>
         </div>
         {% endfor %}
-
-
-
     </div>
 </div>
-
 </body>
 </html>

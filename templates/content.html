@@ -106,6 +106,34 @@
            flex-shrink: 1;
     }
     </style>
+    <script>
+        unction delete_comment_click(){
+         let boardID = "{{board._id }}"
+        }
+
+        function add_comment_click(){
+            let boardID = "{{board._id}}"
+            let comment = $("#comment_data").val()
+            if (comment == '') {
+                    alert('내용을 입력하세요.')
+               }else{
+                   $.ajax({
+                            type: "POST",
+                            url: "/add_comment",
+                            data: {
+                             boardID: boardID,
+                             comment: comment
+                            },
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                alert(response["msg"]);
+                            }
+                        });
+                    }
+               }
+    </script>
 </head>
 <body>
 <div class="home-wrapper">
@@ -147,7 +175,7 @@
         </div>
 
         <div class="comment-wrap media_wrapper">
-
+            {% comments}
             <article class="media add-comment-article">
                 <figure class="media-left">
                 <p class="image is-64x64">
@@ -176,6 +204,7 @@
             </nav>
           </div>
             </article>
+            {% else %}
             {% for comment in comments %}
             <article class="media comment-list-article">
                   <figure class="media-left">
@@ -186,7 +215,7 @@
                   <div class="media-content">
                     <div class="content">
                       <p>
-                        <strong>{{comment.username}}</strong>
+                        <strong>{{comment.userID }}</strong>
                         <br>
                         {{comment.comment}}
                       </p>
@@ -205,11 +234,13 @@
                       </div>
                     </nav>
                   </div>
+
                   <div class="media-right">
-                    <button class="delete"></button>
+                    <button  class="delete"></button>
                   </div>
             </article>
             {% endfor %}
+            {% endif %}
         </div>
     </div>
 </div>

@@ -3,6 +3,7 @@ from pymongo import MongoClient  # pymongo를 임포트 하기
 from datetime import datetime
 import hashlib
 import jwt
+from bson.objectid import ObjectId
 
 SECRET_KEY = 'Eban5joDangStar'
 
@@ -16,6 +17,8 @@ app = Flask(__name__)
 # 메인화면
 @app.route('/')
 def home():
+    borddata =list(db.board.find())
+    print (borddata)
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -57,6 +60,7 @@ def posting():
     filename = f'file-{mytime}'
     # 확장자 나누기
     extension = file.filename.split('.')[-1]
+    # static 폴더에 저장
     # static 폴더에 저장
     save_to = f'static/boardImage/{filename}.{extension}'
     file.save(save_to)
@@ -126,7 +130,6 @@ def api_login():
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=300)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-
         ## token을 줍니다.
         return jsonify({'result': 'success', 'token': token})
     ## 찾지 못하면
@@ -156,44 +159,37 @@ def api_valid():
 #게시글 목록 가져오기
 @app.route("/get_contents", methods=['GET'])
 def get_contents():
-    posts = list(db.posts.find().sort("date", -1).limit(20))
-    print(posts)
-    return render_template('content_list.html', posts=posts)
+    boards = list(db.board.find().limit(20))
+    return render_template('content_list.html', boards=boards)
 
 
 #게시글 한건 보기 조회
 @app.route("/get_content_one", methods=['GET'])
 def get_content_one():
-    content_id = request.args.get("contentid")
+    boardID = request.args.get("boardID")
 
-    post = list(db.posts.find({'_id':ObjectId(content_id)}))
-    comments = list(db.comment.find({'_id':ObjectId(content_id)}))
-    if not comments:
-        print("1")
+    post = list(db.board.find({'_id':ObjectId(boardID)}))
+    comments = list(db.comment.find({'_id':ObjectId(boardID)}))
+    if len(comments) == 0:
         return render_template('content.html', post=post)
     return render_template('content.html', post=post, comments=comments)
 
-
-
-
+#댓글 추가
 @app.route('/add_comment', methods=['POST'])
 def add_comment():
-    content_id = request.args.get("content_id")
-    username = request.args.get("username")
+    content_id = request.args.get("boardID")
     comment = request.args.get("comment")
-
+    userID  = 'test1'
     doc = {
         "content_id": content_id,
-        "username": username,
+        "userID": userID ,
         "comment": comment,
     }
     db.comment.insert_one(doc)
-
     comment = list(db.comment.find({'_id':ObjectId(content_id)}))
     print(comment)
 
     return  render_template('content.html', comment=comment)
-
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
