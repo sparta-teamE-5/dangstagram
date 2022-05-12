@@ -20,6 +20,16 @@
 
     <!-- 로그인 정보가 존재하지 않거나, 로그인 시간이 만료 되었을 경우 alert -->
 
+    <style>
+        #sign-out-button {
+            margin-top: 15px;
+            width: 100%;
+            color: #ff0000;
+        }
+        #password-now {
+            width: 369px;
+        }
+    </style>
     <script>
         $(document).ready(function () {
             let jsonResult = '{{result|tojson|safe}}';
