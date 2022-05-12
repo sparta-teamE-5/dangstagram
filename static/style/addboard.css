@@ -1,31 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Trade+Winds&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    background: #fff;
 }
 
 .addboard-wrapper {
     height: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
     background-repeat: no-repeat;
-
 }
 
 .addboard-content {
-    display: flex;
-    flex-wrap: wrap;
     padding: 60px;
     border: 2px solid black;
     border-radius: 40px;
     background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .addboard-content-img {
-    margin: 0 20px;
+    margin: 20px;
 }
 
 .addboard-content-img img {
@@ -35,7 +34,10 @@ body, html {
 }
 
 .addboard-content-text {
-    margin: 0 20px;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .addboard-content-text-title {
@@ -50,5 +52,10 @@ body, html {
 
 .addboard-content-text-comment > textarea {
     resize: none;
-    height: 300px;
+    height: 380px;
+}
+
+.addboard-submit-button {
+    display: flex;
+    justify-content: center;
 }
